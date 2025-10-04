@@ -2,7 +2,6 @@ package com.t7slution.databasecrudsqlquery.repository;
 
 
 import com.t7slution.databasecrudsqlquery.model.Todo;
-import com.t7slution.databasecrudsqlquery.model.TodoDTO;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;

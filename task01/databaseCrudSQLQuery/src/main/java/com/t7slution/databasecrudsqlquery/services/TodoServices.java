@@ -1,20 +1,22 @@
 package com.t7slution.databasecrudsqlquery.services;
 
 import com.t7slution.databasecrudsqlquery.model.Todo;
-import com.t7slution.databasecrudsqlquery.model.TodoDTO;
+import com.t7slution.databasecrudsqlquery.model.TodoCreateDTO;
+import com.t7slution.databasecrudsqlquery.model.TodoResponseDTO;
+import com.t7slution.databasecrudsqlquery.model.TodoUpdateDTO;
 
 import java.util.List;
 
 public interface TodoServices {
 
-    List<TodoDTO> findAllTodos();
+    List<TodoCreateDTO> findAllTodos();
     Todo findById(long id);
-    TodoDTO saveTodo(TodoDTO todoDTO);
-    TodoDTO updateTodo(long id, TodoDTO todoDTO);
+    TodoCreateDTO saveTodo(TodoCreateDTO todoCreateDTO);
+    TodoCreateDTO updateTodo(long id, TodoCreateDTO todoCreateDTO);
     void deleteTodo(long id);
 
-    TodoDTO findFirstByTitle(String title);
+    TodoResponseDTO findFirstByTitle(String title);
 
-        List<TodoDTO> getTodoByTitle(String title);
+        List<TodoResponseDTO> getTodoByTitle(String title);
 
 }

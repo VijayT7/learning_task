@@ -1,8 +1,11 @@
 package com.t7slution.databasecrudsqlquery.services;
 
 
+import com.t7slution.databasecrudsqlquery.exception.TodoNotoFoundException;
 import com.t7slution.databasecrudsqlquery.model.Todo;
-import com.t7slution.databasecrudsqlquery.model.TodoDTO;
+import com.t7slution.databasecrudsqlquery.model.TodoCreateDTO;
+import com.t7slution.databasecrudsqlquery.model.TodoResponseDTO;
+import com.t7slution.databasecrudsqlquery.model.TodoUpdateDTO;
 import com.t7slution.databasecrudsqlquery.repository.TodoRepository;
 import org.springframework.stereotype.Service;
 
@@ -19,31 +22,39 @@ public class TodoServicesImpl implements TodoServices {
     }
 
     @Override
-    public List<TodoDTO> findAllTodos() {
+    public List<TodoCreateDTO> findAllTodos() {
         return todoRepository.findAll().stream().map(this::convertToDTO).collect(Collectors.toList());
     }
+
+//    @Override
+//    public Todo findById(long id) {
+//        Todo todo = todoRepository.findById(id)
+//                .orElseThrow(() -> new RuntimeException("not found"));
+//        return todo;
+//    }
 
     @Override
     public Todo findById(long id) {
         Todo todo = todoRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("not found"));
+                .orElseThrow(() -> new TodoNotoFoundException(id));
         return todo;
     }
 
+
     @Override
-    public TodoDTO saveTodo(TodoDTO todoDTO) {
-        Todo todo = convertToEntity(todoDTO);
+    public TodoResponseDTO saveTodo(TodoCreateDTO todoCreateDTO) {
+        Todo todo = convertToEntity(todoCreateDTO);
         Todo savedTodo = todoRepository.save(todo);
-        TodoDTO t = convertToDTO(savedTodo);
+        TodoResponseDTO t = convertToDTO(savedTodo);
         return t;
 //        return  convertToDTO(savedTodo);
     }
 
     @Override
-    public TodoDTO updateTodo(long id, TodoDTO todoDTO) {
+    public TodoResponseDTO updateTodo(long id, TodoCreateDTO todoCreateDTO) {
         Todo todo = todoRepository.findById(id).orElseThrow();
-        todo.setTitle(todoDTO.title());
-        todo.setDescription(todoDTO.description());
+        todo.setTitle(todoCreateDTO.getTitle());
+        todo.setDescription(todoCreateDTO.getDescription());
         Todo updatedTodo = todoRepository.save(todo);
         return convertToDTO(updatedTodo);
     }
@@ -57,16 +68,16 @@ public class TodoServicesImpl implements TodoServices {
     /////////////////////// ---   query  ---  //////////////////////////////
 
     @Override
-    public TodoDTO findFirstByTitle(String title) {
+    public TodoResponseDTO findFirstByTitle(String title) {
         Todo todo = todoRepository.findFirstByTitle(title);
         return convertToDTO(todo);
     }
 
     @Override
-    public List<TodoDTO> getTodoByTitle(String title) {
+    public List<TodoResponseDTO> getTodoByTitle(String title) {
         List<Todo> todos = todoRepository.getTodoByTitle(title);
-        List<TodoDTO> todoDTOs = todos.stream().map((todo) -> convertToDTO(todo)).collect(Collectors.toList());
-        return todoDTOs;
+        List<TodoResponseDTO> todoResponseDTOS = todos.stream().map((todo) -> convertToDTO(todo)).collect(Collectors.toList());
+        return todoResponseDTOS;
     }
 
 
@@ -77,15 +88,15 @@ public class TodoServicesImpl implements TodoServices {
 
 
 
-    private TodoDTO convertToDTO(Todo todo){
-        TodoDTO s =new TodoDTO(todo.getId(), todo.getTitle(), todo.getDescription());
+    private TodoResponseDTO convertToDTO(Todo todo){
+        TodoResponseDTO s =new TodoResponseDTO(todo.getId(), todo.getTitle(), todo.getDescription());
         return s;
     }
 
-    private Todo convertToEntity(TodoDTO todoDTO){
+    private Todo convertToEntity(TodoCreateDTO todoCreateDTO){
         Todo todo = new Todo();
-        todo.setTitle(todoDTO.title());
-        todo.setDescription(todoDTO.description());
+        todo.setTitle(todoCreateDTO.getTitle());
+        todo.setDescription(todoCreateDTO.getDescription());
         return todo;
     }
 
